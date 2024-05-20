@@ -1,6 +1,6 @@
 name = "benchmarks"
 
-account_id = "2f83e4d2a261df7a84eeb206abee0d76"
+account_id = ""
 
 workers_dev = true  # Deploy ke workers.dev subdomain, ubah ke false jika ingin menggunakan custom domain
 
