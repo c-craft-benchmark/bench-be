@@ -1,8 +1,8 @@
 name = "benchmarks"
 type = "javascript"
 
-account_id = "2f83e4d2a261df7a84eeb206abee0d76"
-zone_id = "9d9883d6685e401c83db85029ac2e7140c4f3"  # Hapus baris ini jika tidak menggunakan zona spesifik
+account_id = ""
+zone_id = ""  # Hapus baris ini jika tidak menggunakan zona spesifik
 
 workers_dev = true  # Deploy ke workers.dev subdomain, ubah ke false jika ingin menggunakan custom domain
 
