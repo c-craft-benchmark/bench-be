@@ -1,7 +1,7 @@
 name = "benchmarks"
 main = "./index.js"
-
-
+account_id="2f83e4d2a261df7a84eeb206abee0d76"
+compatibility_date = "2024-05-20"
 [env.production]
 name = "benchmarks"
 route = "https://benchmarks.chrisyuda.workers.dev/*"  
