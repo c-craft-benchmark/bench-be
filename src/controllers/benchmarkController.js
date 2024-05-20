@@ -2,6 +2,7 @@ const Benchmark = require('../models/ExecutionTime');
 const PageLoadBenchmark = require('../models/PageLoad');
 const MemoryBenchmark = require('../models/MemoryUsage');
 const AsyncPerformanceBenchmark = require('../models/AsyncPerformanceBenchmark');
+const OptimizationBenchmark = require('../models/OptimizationBenchmark');
 
 
 const { performance } = require('perf_hooks');
@@ -92,29 +93,21 @@ exports.startMemoryBenchmark = async (req, res) => {
 
 exports.startPageLoadBenchmark = async (req, res) => {
     try {
-        // Ambil nilai yang diperlukan dari request body
         const { testType, testCode, testConfig } = req.body;
 
-        // Pastikan testType, testCode, dan testConfig tersedia
+
         if (!testType || !testCode || !testConfig) {
             return res.status(400).json({ success: false, error: "Harap berikan testType, testCode, dan testConfig." });
         }
 
-        // Ambil nilai iterations dari testConfig atau gunakan nilai default 1 jika tidak ada
         const iterations = testConfig.iterations || 1;
 
-        // Inisialisasi array untuk menyimpan hasil dari setiap iterasi
         const results = [];
 
-        // Lakukan iterasi sebanyak nilai yang diberikan
         for (let i = 0; i < iterations; i++) {
-            // Mulai mengukur waktu muat halaman
+
             const start = performance.now();
-
-            // Jalankan kode yang diuji (misalnya, simulasi pengisian halaman)
-            eval(testCode); // Eval digunakan di sini untuk menjalankan kode dari string (Ini harus digunakan dengan hati-hati)
-
-            // Selesaikan pengukuran waktu muat halaman
+            eval(testCode);
             const end = performance.now();
 
 
@@ -185,6 +178,54 @@ exports.startAsyncPerformanceBenchmark = async (req, res) => {
     }
 };
 
+
+exports.startOptimizationBenchmark = async (req, res) => {
+  try {
+    const { optimizationTechnique, testCodeBefore, testCodeAfter, testConfig } = req.body;
+
+    if (!optimizationTechnique || !testCodeBefore || !testCodeAfter || !testConfig) {
+      return res.status(400).json({ success: false, error: "Harap berikan teknik optimisasi, kode uji sebelum, kode uji setelah, dan konfigurasi uji." });
+    }
+
+    const iterations = testConfig.iterations || 1;
+
+    const resultsBefore = [];
+    const resultsAfter = [];
+
+    
+    for (let i = 0; i < iterations; i++) {
+      const startBefore = performance.now();
+      eval(testCodeBefore);
+      const endBefore = performance.now();
+      resultsBefore.push(endBefore - startBefore);
+    }
+
+    for (let i = 0; i < iterations; i++) {
+      const startAfter = performance.now();
+      eval(testCodeAfter);
+      const endAfter = performance.now();
+      resultsAfter.push(endAfter - startAfter);
+    }
+
+    const averageExecutionTimeBefore = resultsBefore.reduce((total, current) => total + current, 0) / resultsBefore.length;
+    const averageExecutionTimeAfter = resultsAfter.reduce((total, current) => total + current, 0) / resultsAfter.length;
+
+    const optimizationBenchmark = await OptimizationBenchmark.create({
+      optimizationTechnique,
+      testCodeBefore,
+      testCodeAfter,
+      testConfig,
+      resultsBefore,
+      resultsAfter,
+      averageExecutionTimeBefore,
+      averageExecutionTimeAfter
+    });
+
+    res.status(201).json({ success: true, data: optimizationBenchmark });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 exports.getMemoryBenchmarkResults = async (req, res) => {
     try {
