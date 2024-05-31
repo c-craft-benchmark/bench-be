@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const benchmarkController = require('../controllers/benchmarkController');
 
 router.post('/start-execution-time', benchmarkController.startBenchmark);
